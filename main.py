@@ -1,0 +1,48 @@
+import re
+
+from scrapy.spiders import Spider
+from scrapy.selector import Selector
+from scrapy.crawler import CrawlerProcess
+
+
+
+class VagalumeSpider(Spider):
+    name = "vagalume"
+    allowed_domains = ["vagalume.com.br"]
+    start_urls = ["http://www.vagalume.com.br/ne-yo/can-we-chill.html",
+    "http://www.vagalume.com.br/ne-yo/lazy-love.html"]
+
+    def parse(self, response):
+        sel = Selector(response)
+        artist_path = sel.xpath('//*[@id="header"]/p[1]/a/text()')[0]
+        artist = artist_path.extract()
+
+        title_path = sel.xpath('//*[@id="header"]/h1/text()')[0]
+        title = title_path.extract()
+
+        lyrics_path = sel.xpath('//*[@id="lyr_original"]/div')[0]
+        lyrics = lyrics_path.extract()
+        
+        lyrics = lyrics.replace("<br>", "\n")
+        lyrics = re.sub('<.*?>', '', lyrics)
+        item = {
+            'artist': artist,
+            'title': title,
+            'lyrics': lyrics
+        }
+        print artist
+        print "#########################"
+        print title
+        print "-------------------------"
+        print lyrics
+        print "#########################"
+        return lyrics
+
+
+if __name__ == "__main__":
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
+
+    process.crawl(VagalumeSpider)
+    process.start()
