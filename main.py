@@ -1,16 +1,33 @@
+import json
 import re
 
 from scrapy.spiders import Spider
 from scrapy.selector import Selector
 from scrapy.crawler import CrawlerProcess
 
+def write_json(lyrics_dict):
+    with open('result.json', 'w') as fp:
+        json.dump(lyrics_dict, fp)
 
+def read_json():
+    try:
+        with open('result.json', 'r') as fp:
+            content = json.loads(fp.read())
+            return content 
+    except IOError:
+        return []
 
 class VagalumeSpider(Spider):
     name = "vagalume"
     allowed_domains = ["vagalume.com.br"]
     start_urls = ["http://www.vagalume.com.br/ne-yo/can-we-chill.html",
     "http://www.vagalume.com.br/ne-yo/lazy-love.html"]
+
+    lyrics_json = read_json()
+
+    # def __init__(self, artists=None, *args, **kwargs):
+    #     super(VagalumeSpider, self).__init__(*args, **kwargs)
+    #     self.start_urls = ["http://www.vagalume.com.br/%s" % artist for artist in artists]
 
     def parse(self, response):
         sel = Selector(response)
@@ -19,6 +36,7 @@ class VagalumeSpider(Spider):
 
         title_path = sel.xpath('//*[@id="header"]/h1/text()')[0]
         title = title_path.extract()
+        title = title.strip()
 
         lyrics_path = sel.xpath('//*[@id="lyr_original"]/div')[0]
         lyrics = lyrics_path.extract()
@@ -30,6 +48,7 @@ class VagalumeSpider(Spider):
             'title': title,
             'lyrics': lyrics
         }
+        self.lyrics_json.append(item)
         print artist
         print "#########################"
         print title
@@ -46,3 +65,4 @@ if __name__ == "__main__":
 
     process.crawl(VagalumeSpider)
     process.start()
+   
