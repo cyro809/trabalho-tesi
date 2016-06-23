@@ -8,27 +8,30 @@ from musics import Musics
 
 lyrics_json = []
 
+
 def write_json(lyrics_dict):
     with open('result.json', 'w') as fp:
-        json.dump(lyrics_dict, fp)
+        json.dump(lyrics_dict, fp, ensure_ascii=False)
+
 
 def read_json():
     try:
         with open('result.json', 'r') as fp:
             content = json.loads(fp.read())
-            return content 
+            return content
     except IOError:
         return []
 
 
-lyrics_json = read_json()
+
+
 
 class VagalumeSpider(Spider):
     name = "vagalume"
     allowed_domains = ["vagalume.com.br"]
     start_urls = Musics.URLS
 
-    
+
     # def __init__(self, artists=None, *args, **kwargs):
     #     super(VagalumeSpider, self).__init__(*args, **kwargs)
     #     self.start_urls = ["http://www.vagalume.com.br/%s" % artist for artist in artists]
@@ -44,7 +47,7 @@ class VagalumeSpider(Spider):
 
         lyrics_path = sel.xpath('//*[@id="lyr_original"]/div')[0]
         lyrics = lyrics_path.extract()
-        
+
         lyrics = lyrics.replace("<br>", "\n")
         lyrics = re.sub('<.*?>', '', lyrics)
         item = {
@@ -53,7 +56,7 @@ class VagalumeSpider(Spider):
             'lyrics': lyrics,
             'theme': '',
             'sentiment': '',
-            
+
         }
         lyrics_json.append(item)
         print artist
@@ -66,6 +69,8 @@ class VagalumeSpider(Spider):
 
 
 if __name__ == "__main__":
+    lyrics_json = read_json()
+
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
     })
@@ -74,4 +79,4 @@ if __name__ == "__main__":
     process.start()
     write_json(lyrics_json)
 
-   
+
