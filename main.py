@@ -1,5 +1,6 @@
 import json
 import re
+import io
 
 from scrapy.spiders import Spider
 from scrapy.selector import Selector
@@ -11,7 +12,7 @@ lyrics_json = []
 
 def write_json(lyrics_dict):
     with open('result.json', 'w') as fp:
-        json.dump(lyrics_dict, fp, ensure_ascii=False)
+        json.dump(lyrics_dict, fp, ensure_ascii=False, encoding='utf-8')
 
 
 def read_json():
@@ -51,11 +52,11 @@ class VagalumeSpider(Spider):
         lyrics = lyrics.replace("<br>", "\n")
         lyrics = re.sub('<.*?>', '', lyrics)
         item = {
-            'artist': artist,
-            'title': title,
-            'lyrics': lyrics,
-            'theme': '',
-            'sentiment': '',
+            'artist': artist.encode('utf-8'),
+            'title': title.encode('utf-8'),
+            'lyrics': lyrics.encode('utf-8'),
+            'theme': ''.encode('utf-8'),
+            'sentiment': ''.encode('utf-8'),
 
         }
         lyrics_json.append(item)
