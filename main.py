@@ -1,30 +1,15 @@
-import json
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import re
-import io
 
 from scrapy.spiders import Spider
 from scrapy.selector import Selector
 from scrapy.crawler import CrawlerProcess
 from musics import Musics
+from helpers import read_json, write_json
 
 lyrics_json = []
-
-
-def write_json(lyrics_dict):
-    with open('result.json', 'w') as fp:
-        json.dump(lyrics_dict, fp, ensure_ascii=False, encoding='utf-8')
-
-
-def read_json():
-    try:
-        with open('result.json', 'r') as fp:
-            content = json.loads(fp.read())
-            return content
-    except IOError:
-        return []
-
-
-
 
 
 class VagalumeSpider(Spider):
@@ -60,17 +45,11 @@ class VagalumeSpider(Spider):
 
         }
         lyrics_json.append(item)
-        print artist
-        print "#########################"
-        print title
-        print "-------------------------"
-        print lyrics
-        print "#########################"
         return lyrics
 
 
 if __name__ == "__main__":
-    lyrics_json = read_json()
+    lyrics_json = read_json('result.json')
 
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
@@ -78,6 +57,6 @@ if __name__ == "__main__":
 
     process.crawl(VagalumeSpider)
     process.start()
-    write_json(lyrics_json)
+    write_json('result.json', lyrics_json)
 
 
