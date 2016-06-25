@@ -1,62 +1,55 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+import sys
+import pycurl
+import json
 
-import re
+from urllib import urlencode
 
-from scrapy.spiders import Spider
-from scrapy.selector import Selector
 from scrapy.crawler import CrawlerProcess
-from musics import Musics
-from helpers import read_json, write_json
-
-lyrics_json = []
-
-
-class VagalumeSpider(Spider):
-    name = "vagalume"
-    allowed_domains = ["vagalume.com.br"]
-    start_urls = Musics.URLS
+from utils import read_json, write_json, read_urls_file, read_urls_input
+from vagalume_spider import VagalumeSpider
+from test import Test
 
 
-    # def __init__(self, artists=None, *args, **kwargs):
-    #     super(VagalumeSpider, self).__init__(*args, **kwargs)
-    #     self.start_urls = ["http://www.vagalume.com.br/%s" % artist for artist in artists]
-
-    def parse(self, response):
-        sel = Selector(response)
-        artist_path = sel.xpath('//*[@id="header"]/p[1]/a/text()')[0]
-        artist = artist_path.extract()
-
-        title_path = sel.xpath('//*[@id="header"]/h1/text()')[0]
-        title = title_path.extract()
-        title = title.strip()
-
-        lyrics_path = sel.xpath('//*[@id="lyr_original"]/div')[0]
-        lyrics = lyrics_path.extract()
-
-        lyrics = lyrics.replace("<br>", "\n")
-        lyrics = re.sub('<.*?>', '', lyrics)
-        item = {
-            'artist': artist.encode('utf-8'),
-            'title': title.encode('utf-8'),
-            'lyrics': lyrics.encode('utf-8'),
-            'theme': ''.encode('utf-8'),
-            'sentiment': ''.encode('utf-8'),
-
-        }
-        lyrics_json.append(item)
-        return lyrics
-
-
-if __name__ == "__main__":
-    lyrics_json = read_json('result.json')
-
+def crawl_lyrics(urls_array):
+    v_spider = VagalumeSpider(urls=urls_array)
     process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
     })
 
-    process.crawl(VagalumeSpider)
+    process.crawl(v_spider, urls=urls_array)
     process.start()
-    write_json('result.json', lyrics_json)
+    return v_spider.lyrics_array
+
+def classify_lyrics(lyrics_array):
+    classified_array = []
+    sys.stderr.write("Testing %s\n" % pycurl.version)
+    c = pycurl.Curl()
+
+    for music in lyrics_array:
+        t = Test()
+        lyric = {
+            'text': music['lyrics'].encode('utf-8')
+        }
+        postfields = urlencode(lyric)
+        c.setopt(c.POSTFIELDS, postfields)
+        c.setopt(c.URL, 'http://text-processing.com/api/sentiment/')
+        c.setopt(c.WRITEFUNCTION, t.body_callback)
+        c.perform()
+        result_dict = json.loads(t.contents)
+        music['sentiment'] = result_dict['label']
+        classified_array.append(music)
+
+    c.close()
+
+    return classified_array
 
 
+if __name__ == "__main__":
+    urls_array = read_urls_input() # Aqui colocamos a entrada desejada
+    lyrics_array = crawl_lyrics(urls_array)
+    
+    classified_lyrics = classify_lyrics(lyrics_array)
+
+    write_json('teste.json', lyrics_array)
