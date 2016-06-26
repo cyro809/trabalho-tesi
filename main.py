@@ -47,9 +47,11 @@ def classify_lyrics(lyrics_array):
 
 
 if __name__ == "__main__":
-    urls_array = read_urls_input() # Aqui colocamos a entrada desejada
+    json_filename = 'teste.json'
+    input_filename = 'teste.txt'
+    database_array = read_json(json_filename)
+    urls_array = read_urls_file(input_filename) # Aqui colocamos a entrada desejada
     lyrics_array = crawl_lyrics(urls_array)
     
-    classified_lyrics = classify_lyrics(lyrics_array)
-
-    write_json('teste.json', lyrics_array)
+    database_array.extend(classify_lyrics(lyrics_array))
+    write_json(json_filename, database_array)
