@@ -47,7 +47,7 @@ def classify_lyrics(lyrics_array):
 
 
 if __name__ == "__main__":
-    json_filename = 'teste.json'
+    json_filename = 'database.json'
     input_filename = 'teste.txt'
     database_array = read_json(json_filename)
     urls_array = read_urls_file(input_filename) # Aqui colocamos a entrada desejada
