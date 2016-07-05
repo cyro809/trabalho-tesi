@@ -36,16 +36,13 @@ class VagalumeSpider(Spider):
         lyrics = lyrics.replace("<br>", "\n")
         lyrics = re.sub('<.*?>', '', lyrics)
         lyrics = lyrics.strip()
-        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
-        print self.start_urls
-        print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         item = {
             'artist': artist,
             'title': title,
             'lyrics': lyrics,
             'theme': '',
             'sentiment': '',
-
+            'url': response.url
         }
         self.lyrics_array.append(item)
         return lyrics
