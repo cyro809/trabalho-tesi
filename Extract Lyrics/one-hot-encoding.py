@@ -52,7 +52,7 @@ for i in range(0,nM):
     finalDict = dictSum(finalDict, freqDict)
     
 sys.stdout.write("\rProgress: %d%%" % 100)
-print(finalDict)
+
 print("")
 print("")
 print("-----------------------------------")
@@ -60,3 +60,7 @@ print("Lenght of dict: " + str(len(finalDict)))
 print("Musics " + str(nM))
 print("-----------------------------------")
 print("")
+
+wordVect = open("wordVect", "w")
+for item in finalDict.items():
+    wordVect.write(item[0] + "\n")
