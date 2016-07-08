@@ -1,0 +1,3 @@
+#Red:   Nouns
+#Green: Verbs
+#Blue:  Adjectives
