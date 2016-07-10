@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import re
 import codecs
 import fileinput
 
@@ -36,3 +36,9 @@ def read_urls_input():
     urls_array = urls.split(',')
     return urls_array
 
+def remove_special_characters(text):
+    text = text.strip()
+    text = text.replace('\n\n', ' ')
+    text = text.replace('\n', ' ')
+    text = re.sub('[!,.()?]', ' ', text)
+    return text
