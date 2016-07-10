@@ -1,6 +1,7 @@
 import numpy as np
 import fileinput
 from utils import read_json, remove_special_characters
+from sklearn.cluster import KMeans
 
 
 class MusicSVD:
@@ -14,13 +15,13 @@ class MusicSVD:
     
     
     def build_initial_matrix(self, json_array):
-        initial_matrix = np.zeros(shape=(self.word_list_length, self.music_list_length), dtype=int)    
+        initial_matrix = np.zeros(shape=(self.music_list_length, self.word_list_length), dtype=int)    
         for music in json_array:
             music['lyrics'] = remove_special_characters(music['lyrics'].lower().encode('utf-8'))
             for i in range(0,20):
                 for music_word in music['lyrics'].split():
                     if self.word_list[i].lower().strip() == music_word:
-                        initial_matrix[self.word_dict[self.word_list[i]]][self.music_dict[music['url']]] += 1
+                        initial_matrix[self.music_dict[music['url']]][self.word_dict[self.word_list[i]]] += 1
 
         return initial_matrix
 
@@ -40,16 +41,29 @@ class MusicSVD:
             for i in range(0,self.music_list_length):
                 self.music_dict[self.music_list[i].strip()] = i
 
+    def calculate_svd(self, matrix):
+        P, D, Q = np.linalg.svd(matrix, full_matrices=False)
+        X_a = np.dot(np.dot(P, np.diag(D)), Q)
+        return X_a
+
 
 
 music_svd = MusicSVD()
 music_svd.get_word_list('extract_lyrics/wordVect.txt')
 music_svd.get_music_list('teste.txt')
 json_array = read_json('database.json')
-svd_matrix = music_svd.build_initial_matrix(json_array)
-for i in range(0,20):
-    print '#########################################################'
-    print music_svd.word_list[i]
-    print '#########################################################'
-    print svd_matrix[i]
-    print '---------------------------------------------------------'
+initial_matrix = music_svd.build_initial_matrix(json_array)
+# for i in range(0,20):
+#     print '#########################################################'
+#     print music_svd.word_list[i]
+#     print '#########################################################'
+#     print svd_matrix[i]
+#     print '---------------------------------------------------------'
+
+svd_matrix = music_svd.calculate_svd(initial_matrix)
+kmeans = KMeans(n_clusters=3)
+kmeans.fit(svd_matrix)
+for i in range(0,200):
+    print "Music: ", music_svd.music_list[i].strip()
+    print "Label: ", kmeans.labels_[i]
+    print
