@@ -20,7 +20,7 @@ class MusicSVD:
         for music in json_array:
             music['lyrics'] = remove_special_characters(music['lyrics'].lower().encode('utf-8'))
             self.music_dict[music['url']]['sentiment'] = music['sentiment']
-            for i in range(0,20):
+            for i in range(0,len(self.word_list)):
                 for music_word in music['lyrics'].split():
                     if self.word_list[i].lower().strip() == music_word:
                         initial_matrix[self.music_dict[music['url']]['pos']][self.word_dict[self.word_list[i]]] += 1
@@ -31,7 +31,9 @@ class MusicSVD:
 
     def get_word_list(self, filename):
         with open(filename, 'r') as fp:
-            self.word_list = fp.readlines()
+            for line in fp:
+                if len(line.strip()) > 3:
+                    self.word_list.append(line.strip())
             self.word_list_length = len(self.word_list)
             for i in range(0,self.word_list_length):
                 self.word_dict[self.word_list[i]] = i
@@ -65,9 +67,10 @@ initial_matrix = music_svd.build_initial_matrix(json_array)
 svd_matrix = music_svd.calculate_svd(initial_matrix)
 kmeans = KMeans(n_clusters=3)
 kmeans.fit(svd_matrix)
-for i in range(0,200):
-    print "Music: ", music_svd.music_list[i].strip()
-    print "Label: ", kmeans.labels_[i]
-    print "Sentiment: ", music_svd.music_dict[music_svd.music_list[i].strip()]['sentiment']
-    print
+# for i in range(0,200):
+#     print "Music: ", music_svd.music_list[i].strip()
+#     print "Label: ", kmeans.labels_[i]
+#     print "Sentiment: ", music_svd.music_dict[music_svd.music_list[i].strip()]['sentiment']
+#     print
+print "Word list length: ", music_svd.word_list_length
 get_proportion(kmeans.labels_, music_svd.music_dict, music_svd.music_list)
