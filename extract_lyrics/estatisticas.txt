@@ -1,0 +1,27 @@
+200 musicas {'neg': 145, 'neutral': 25, 'pos': 30}
+2764 palavras (Todas as palavras)
+
+Total labels:
+Label 0:  6  Label 1:  66 Label 2:  128
+Label 0 Proportions:
+pos:  0.166666666667 neg:  0.333333333333 neutral:  0.5
+####################################################################
+Label 1 Proportions:
+pos:  0.151515151515 neg:  0.772727272727 neutral:  0.0757575757576
+####################################################################
+Label 2 Proportions:
+pos:  0.1484375 neg:  0.71875 neutral:  0.1328125
+
+---------------------------------------------------------------------------------------------------
+2460 palavras (4 caracteres ou mais)
+
+Total labels:
+Label 0:  16  Label 1:  183 Label 2:  1
+Label 0 Proportions:
+pos:  0.25 neg:  0.6875 neutral:  0.0625
+####################################################################
+Label 1 Proportions:
+pos:  0.142076502732 neg:  0.726775956284 neutral:  0.131147540984
+####################################################################
+Label 2 Proportions:
+pos:  0.0 neg:  1.0 neutral:  0.0
