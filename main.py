@@ -10,6 +10,7 @@ from scrapy.crawler import CrawlerProcess
 from utils import read_json, write_json, read_urls_file, read_urls_input
 from vagalume_spider import VagalumeSpider
 from test import Test
+from music_count import sentiment_count
 
 
 def crawl_lyrics(urls_array):
@@ -47,11 +48,13 @@ def classify_lyrics(lyrics_array):
 
 
 if __name__ == "__main__":
-    json_filename = 'database.json'
-    input_filename = 'teste.txt'
+    json_filename = 'database_new.json'
+    input_filename = 'teste2.txt'
     database_array = read_json(json_filename)
     urls_array = read_urls_file(input_filename) # Aqui colocamos a entrada desejada
     lyrics_array = crawl_lyrics(urls_array)
     
     database_array.extend(classify_lyrics(lyrics_array))
     write_json(json_filename, database_array)
+    sentiment_count(json_filename)
+
