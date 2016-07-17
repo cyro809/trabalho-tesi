@@ -22,10 +22,13 @@ def get_proportion(array, music_dict, music_list):
     for i in range(0,len(array)):
         count_dict[array[i]] += 1
         if array[i] == 0:
+            print "Label 0: ", music_list[i].strip()
             zeros_sentiment_prop[music_dict[music_list[i].strip()]['sentiment']] += 1
         elif array[i] == 1:
+            print "Label 1: ", music_list[i].strip()
             ones_sentiment_prop[music_dict[music_list[i].strip()]['sentiment']] += 1
         else:
+            print "Label 2: ", music_list[i].strip()
             twos_sentiment_prop[music_dict[music_list[i].strip()]['sentiment']] += 1
 
     print 'Total labels:'

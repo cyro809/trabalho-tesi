@@ -1,7 +1,7 @@
+import cv2
 import numpy as np
 import fileinput
 from utils import read_json, remove_special_characters
-from sklearn.cluster import KMeans
 from proportion import get_proportion
 
 
@@ -16,6 +16,7 @@ class MusicSVD:
     
     
     def build_initial_matrix(self, json_array):
+        print 'build_initial_matrix'
         initial_matrix = np.zeros(shape=(self.music_list_length, self.word_list_length), dtype=int)    
         for music in json_array:
             music['lyrics'] = remove_special_characters(music['lyrics'].lower().encode('utf-8'))
@@ -32,8 +33,7 @@ class MusicSVD:
     def get_word_list(self, filename):
         with open(filename, 'r') as fp:
             for line in fp:
-                if len(line.strip()) > 3:
-                    self.word_list.append(line.strip())
+                self.word_list.append(line.strip())
             self.word_list_length = len(self.word_list)
             for i in range(0,self.word_list_length):
                 self.word_dict[self.word_list[i]] = i
@@ -45,17 +45,20 @@ class MusicSVD:
             for i in range(0,self.music_list_length):
                 self.music_dict[self.music_list[i].strip()] = {'pos': i, 'sentiment': ''}
 
-    def calculate_svd(self, matrix):
-        P, D, Q = np.linalg.svd(matrix, full_matrices=False)
-        X_a = np.dot(np.dot(P, np.diag(D)), Q)
-        return X_a
+    def calculate_svd(self, matrix, k):
+        print 'calculate_svd'
+        U, sigma, V = np.linalg.svd(matrix, full_matrices=False)
+        music_vectors = np.dot(np.diag(sigma), V[:,:k])
+        Z = np.float32(music_vectors)
+        print Z
+        return Z
 
 
 
 music_svd = MusicSVD()
 music_svd.get_word_list('extract_lyrics/wordVect.txt')
-music_svd.get_music_list('teste.txt')
-json_array = read_json('database.json')
+music_svd.get_music_list('teste_min.txt')
+json_array = read_json('database_min.json')
 initial_matrix = music_svd.build_initial_matrix(json_array)
 # for i in range(0,20):
 #     print '#########################################################'
@@ -64,13 +67,4 @@ initial_matrix = music_svd.build_initial_matrix(json_array)
 #     print svd_matrix[i]
 #     print '---------------------------------------------------------'
 
-svd_matrix = music_svd.calculate_svd(initial_matrix)
-kmeans = KMeans(n_clusters=3)
-kmeans.fit(svd_matrix)
-# for i in range(0,200):
-#     print "Music: ", music_svd.music_list[i].strip()
-#     print "Label: ", kmeans.labels_[i]
-#     print "Sentiment: ", music_svd.music_dict[music_svd.music_list[i].strip()]['sentiment']
-#     print
-print "Word list length: ", music_svd.word_list_length
-get_proportion(kmeans.labels_, music_svd.music_dict, music_svd.music_list)
+svd_matrix = music_svd.calculate_svd(initial_matrix, 3)
