@@ -4,6 +4,7 @@ import fileinput
 from utils import read_json, remove_special_characters
 from proportion import get_proportion
 
+KMEANS_ITERATIONS = 100
 
 class MusicSVD:
     word_list = []
@@ -56,7 +57,7 @@ class MusicSVD:
 
 
 music_svd = MusicSVD()
-music_svd.get_word_list('extract_lyrics/wordVect.txt')
+music_svd.get_word_list('wordVect.txt')
 music_svd.get_music_list('teste_min.txt')
 json_array = read_json('database_min.json')
 initial_matrix = music_svd.build_initial_matrix(json_array)
@@ -68,3 +69,7 @@ initial_matrix = music_svd.build_initial_matrix(json_array)
 #     print '---------------------------------------------------------'
 
 svd_matrix = music_svd.calculate_svd(initial_matrix, 3)
+
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, KMEANS_ITERATIONS, 1.0)
+ret,label,center=cv2.kmeans(svd_matrix,3,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+print label
