@@ -3,8 +3,10 @@ import numpy as np
 import fileinput
 from utils import read_json, remove_special_characters
 from proportion import get_proportion
+from k_fold import build_k_fold
 
 KMEANS_ITERATIONS = 100
+K_FOLD_WINDOW_SIZE = 15
 
 class MusicSVD:
     word_list = []
@@ -44,15 +46,14 @@ class MusicSVD:
             self.music_list = fp.readlines()
             self.music_list_length = len(self.music_list)
             for i in range(0,self.music_list_length):
-                self.music_dict[self.music_list[i].strip()] = {'pos': i, 'sentiment': ''}
+                self.music_list[i] = self.music_list[i].strip()
+                self.music_dict[self.music_list[i]] = {'pos': i, 'sentiment': ''}
 
     def calculate_svd(self, matrix, k):
         print 'calculate_svd'
         U, sigma, V = np.linalg.svd(matrix, full_matrices=False)
         music_vectors = np.dot(np.diag(sigma), V[:,:k])
-        Z = np.float32(music_vectors)
-        print Z
-        return Z
+        return music_vectors
 
 
 
@@ -68,8 +69,23 @@ initial_matrix = music_svd.build_initial_matrix(json_array)
 #     print svd_matrix[i]
 #     print '---------------------------------------------------------'
 
-svd_matrix = music_svd.calculate_svd(initial_matrix, 3)
+svd_matrix = music_svd.calculate_svd(initial_matrix, 4)
+
+kfold_trainings, kfold_tests = build_k_fold(music_svd.music_list, K_FOLD_WINDOW_SIZE)
 
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, KMEANS_ITERATIONS, 1.0)
-ret,label,center=cv2.kmeans(svd_matrix,3,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
-print label
+labels = []
+centers = []
+retValues = []
+for i in range(0,len(kfold_tests)):
+    train_matrix = [svd_matrix[music_svd.music_dict[x]['pos']] for x in kfold_trainings[i]]
+    train_matrix = np.float32(train_matrix)
+
+    ret,label,center=cv2.kmeans(train_matrix,3,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+
+    get_proportion(label, music_svd.music_dict, kfold_trainings[i])
+
+    labels.append(label)
+    centers.append(center)
+    retValues.append(ret)
+

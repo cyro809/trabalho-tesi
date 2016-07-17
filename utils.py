@@ -3,7 +3,7 @@
 import re
 import codecs
 import fileinput
-
+import math
 import json
 
 def write_json(filename, lyrics_array):
@@ -42,3 +42,10 @@ def remove_special_characters(text):
     text = text.replace('\n', ' ')
     text = re.sub('[!,.()?]', ' ', text)
     return text
+
+def calculate_distance(p,q, n):
+    result = 0
+    for i in range(0,n):
+        result += (p[i] - q[i])**2
+
+    return math.sqrt(result)

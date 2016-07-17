@@ -20,15 +20,15 @@ def get_proportion(array, music_dict, music_list):
         'neutral': .0
     }
     for i in range(0,len(array)):
-        count_dict[array[i]] += 1
-        if array[i] == 0:
-            print "Label 0: ", music_list[i].strip()
+        count_dict[array[i][0]] += 1
+        if array[i][0] == 0:
+            #print "Label 0: ", music_list[i].strip()
             zeros_sentiment_prop[music_dict[music_list[i].strip()]['sentiment']] += 1
-        elif array[i] == 1:
-            print "Label 1: ", music_list[i].strip()
+        elif array[i][0] == 1:
+            #print "Label 1: ", music_list[i].strip()
             ones_sentiment_prop[music_dict[music_list[i].strip()]['sentiment']] += 1
         else:
-            print "Label 2: ", music_list[i].strip()
+           # print "Label 2: ", music_list[i].strip()
             twos_sentiment_prop[music_dict[music_list[i].strip()]['sentiment']] += 1
 
     print 'Total labels:'
@@ -41,5 +41,6 @@ def get_proportion(array, music_dict, music_list):
     print "####################################################################"
     print "Label 2 Proportions:"
     print "pos: ", twos_sentiment_prop['pos']/count_dict[2], "neg: ", twos_sentiment_prop['neg']/count_dict[2], "neutral: ", twos_sentiment_prop['neutral']/count_dict[2]
+    print
 
 
