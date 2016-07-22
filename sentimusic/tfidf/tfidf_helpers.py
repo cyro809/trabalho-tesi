@@ -23,14 +23,14 @@ stop_words = set(stopwords.words('english'))    #Stopwords from nltk
 porter_stemmer = PorterStemmer()                #Steammer  from nltk
 tokenizer = nltk.data.load("tokenizers/punkt/english.pickle") #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
 
-nM = 100                                       #Number of musics
+                                       #Number of musics
 list_of_documents = []                          #Cleaned documents (dict)
 #---------------------------------------------------------------------------------------------#
 
 def build_lexiconAndDocuments(data):
         
     finalWords = {}
-    for i in range(0,nM):
+    for i in range(0,len(data)):
         #Print progress bar:
         #sys.stdout.write("\rProgress: %d%%" % i)
         #sys.stdout.flush()
