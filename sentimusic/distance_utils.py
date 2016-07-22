@@ -4,10 +4,10 @@
 import math
 
 
-def calculate_distance(p,q, n):
+def calculate_distance(vec1,vec2, num):
     result = 0
-    for i in range(0,n):
-        result += (p[i] - q[i])**2
+    for i in range(0,num):
+        result += (vec1[0][i] - vec2[i])**2
 
     return math.sqrt(result)
 

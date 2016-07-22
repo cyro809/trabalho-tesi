@@ -42,9 +42,9 @@ class MusicSVD:
             for i in range(0,self.word_list_length):
                 self.word_dict[self.word_list[i]] = i
 
-    def set_music_dict(self, music_list):
+    def set_music_dict(self, music_list, music_sentiment_list):
             for i in range(0, len(music_list)):
-                self.music_dict[music_list[i]] = {'pos': i, 'sentiment': ''}
+                self.music_dict[music_list[i]] = {'pos': i, 'sentiment': music_sentiment_list[i]}
 
     def calculate_svd(self, matrix, k):
         print 'calculate_svd'

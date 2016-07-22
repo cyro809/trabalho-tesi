@@ -12,6 +12,7 @@ def generate_matrix(filename):
     
     #Lista de Musicas (URLS)
     music_list = [d['url'] for d in data]
+    music_sentiment_list = [d['sentiment'] for d in data]
 
     #Make doc_tf_vector in docList:
     doc_term_matrix = []
@@ -23,7 +24,7 @@ def generate_matrix(filename):
     #Transform in numpy matrix:
     doc_term_matrix = np.matrix(doc_term_matrix)
 
-    return (doc_term_matrix, vocabulary, music_list)
+    return (doc_term_matrix, vocabulary, music_list, music_sentiment_list)
 #----------------------------------------------
 
 #Normalize vector:
