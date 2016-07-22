@@ -3,9 +3,10 @@
 import cv2
 import numpy as np
 import fileinput
-from utils import read_json, remove_special_characters, get_minimum_distance_label
+from utils import read_json, remove_special_characters
 from proportion import get_proportion
 from k_fold import build_k_fold
+from kmeans import KMeans
 
 KMEANS_ITERATIONS = 100
 K_FOLD_WINDOW_SIZE = 15
@@ -68,45 +69,6 @@ json_array = read_json('database_min.json')
 initial_matrix = music_svd.build_initial_matrix(json_array)
 svd_matrix = music_svd.calculate_svd(initial_matrix, 4)
 
-# Cria os folds do K Fold, separando em treinamento e teste
-kfold_trainings, kfold_tests = build_k_fold(music_svd.music_list, K_FOLD_WINDOW_SIZE)
+kmeans = KMeans(music_svd.music_list, svd_matrix, music_svd.music_dict)
 
-# Criterio para o opencv K Means
-criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, KMEANS_ITERATIONS, 1.0)
-labels = []
-centers = []
-retValues = []
-current_score = 0
-final_matrix = []
-for i in range(0,len(kfold_trainings)):
-    score = 0
-    train_matrix = [svd_matrix[music_svd.music_dict[x]['pos']] for x in kfold_trainings[i]]
-    train_matrix = np.float32(train_matrix)
-
-    test_matrix = [svd_matrix[music_svd.music_dict[x]['pos']] for x in kfold_tests[i]]
-    test_matrix = np.float32(test_matrix)
-
-    ret,label,center=cv2.kmeans(train_matrix,3,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
-
-    center_labels = get_proportion(label, music_svd.music_dict, kfold_trainings[i])
-
-    for j in range(0,len(test_matrix)):
-        music_label = get_minimum_distance_label(center, test_matrix[j])
-        if center_labels[music_label] == music_svd.music_dict[kfold_tests[i][j]]['sentiment']:
-            score += 1
-
-    print '**********************************************'
-    print
-    print
-    print 'Execution ', i, '- Score: ', score
-    print
-    print
-    print '**********************************************'
-    # Verifica a pontuação do treinamento atual do K Means
-    if score > current_score:
-        final_matrix = np.concatenate((train_matrix, test_matrix), axis=0)
-
-    labels.append(label)
-    centers.append(center)
-    retValues.append(ret)
-
+kmeans.execute_kfold_training()

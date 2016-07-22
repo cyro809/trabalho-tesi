@@ -36,17 +36,17 @@ def get_proportion(array, music_dict, music_list):
         else:
             twos_sentiment_prop[music_dict[music_list[i].strip()]['sentiment']] += 1
 
-    print 'Total labels:'
-    print "Label 0: ", count_dict[0], " Label 1: ", count_dict[1], "Label 2: ", count_dict[2]
-    print "Label 0 Proportions:"
-    print "pos: ", zeros_sentiment_prop['pos']/count_dict[0], "neg: ", zeros_sentiment_prop['neg']/count_dict[0], "neutral: ", zeros_sentiment_prop['neutral']/count_dict[0]
-    print "####################################################################"
-    print "Label 1 Proportions:"
-    print "pos: ", ones_sentiment_prop['pos']/count_dict[1], "neg: ", ones_sentiment_prop['neg']/count_dict[1], "neutral: ", ones_sentiment_prop['neutral']/count_dict[1]
-    print "####################################################################"
-    print "Label 2 Proportions:"
-    print "pos: ", twos_sentiment_prop['pos']/count_dict[2], "neg: ", twos_sentiment_prop['neg']/count_dict[2], "neutral: ", twos_sentiment_prop['neutral']/count_dict[2]
-    print
+    # print 'Total labels:'
+    # print "Label 0: ", count_dict[0], " Label 1: ", count_dict[1], "Label 2: ", count_dict[2]
+    # print "Label 0 Proportions:"
+    # print "pos: ", zeros_sentiment_prop['pos']/count_dict[0], "neg: ", zeros_sentiment_prop['neg']/count_dict[0], "neutral: ", zeros_sentiment_prop['neutral']/count_dict[0]
+    # print "####################################################################"
+    # print "Label 1 Proportions:"
+    # print "pos: ", ones_sentiment_prop['pos']/count_dict[1], "neg: ", ones_sentiment_prop['neg']/count_dict[1], "neutral: ", ones_sentiment_prop['neutral']/count_dict[1]
+    # print "####################################################################"
+    # print "Label 2 Proportions:"
+    # print "pos: ", twos_sentiment_prop['pos']/count_dict[2], "neg: ", twos_sentiment_prop['neg']/count_dict[2], "neutral: ", twos_sentiment_prop['neutral']/count_dict[2]
+    # print
 
     group_sentiment[0] = max(zeros_sentiment_prop.iteritems(), key=operator.itemgetter(1))[0]
     group_sentiment[1] = max(ones_sentiment_prop.iteritems(), key=operator.itemgetter(1))[0]
