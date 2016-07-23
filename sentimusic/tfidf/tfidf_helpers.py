@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #Import:
 import enchant
 from nltk.corpus import stopwords

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import tfidf_helpers as f
 import json
 import numpy as np
@@ -10,21 +12,24 @@ def generate_matrix(filename):
     #Create a list of words (Our vocabulary) and prepare the documents:
     vocabulary = f.build_lexiconAndDocuments(data)
     
-    #Lista de Musicas (URLS)
-    music_list = [d['url'] for d in data]
-    music_sentiment_list = [d['sentiment'] for d in data]
-
+    
+    music_dict = {}
+    music_list = []
     #Make doc_tf_vector in docList:
     doc_term_matrix = []
     for i in range(0,len(data)):
         doc_vector = [f.freq(word, i) for word in vocabulary]
         #tf_vector_string = ", ".join(format(freq, "d") for freq in tf_vector)
         doc_term_matrix.append(doc_vector)
+
+        # Lista de Musicas (URLS) e dicionario com a posição e o sentimento de cada musica
+        music_list.append(data[i]['url'])
+        music_dict[data[i]['url']] = {'pos': i, 'sentiment': data[i]['sentiment']}
         
     #Transform in numpy matrix:
     doc_term_matrix = np.matrix(doc_term_matrix)
 
-    return (doc_term_matrix, vocabulary, music_list, music_sentiment_list)
+    return (doc_term_matrix, vocabulary, music_list, music_dict)
 #----------------------------------------------
 
 #Normalize vector:
