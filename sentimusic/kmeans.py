@@ -142,6 +142,8 @@ class KMeans:
         # Calculamos a acuracia de acordo com a quantidade de musicas acertadas 
         # sobre o total de musicas testadas
         accuracy = score/total_test_length
+        print
+        print
         print '**********************************************'
         print '----------------------------------------------'
         print
