@@ -13,6 +13,7 @@ class KMeans:
     centers_labels = []
     retValues = []
     final_matrix = []
+    final_group_labels = {}
     total_test_length = 0
     best_accuracy = 0.
     best_accuracy_train = 0
@@ -20,47 +21,48 @@ class KMeans:
     # ---------------------------------------------------------------------------
     # Construtor da classe KMeans
     # - music_list: Lista com as urls (id) das musicas ordenadas
-    # - svd_matrix: Matriz SVD já calculada que será usada no aprendizado
-    # - music_dict: Dicionario contendo as musicas e seus respectivos sentimentos e posições na matriz svd
     # - iterations: Quantas iterações o KMeans irá executar (default = 100)
-    # - window_size: Tamanho da janela para separação dos conjuntos no K Fold
+    # - clusters: Quantidade de clusters (agrupados) que o KMeans irá agrupar as músicas
+    # - window_size: Tamanho da janela para separação dos conjuntos no K Fold (default = 15)
     # ---------------------------------------------------------------------------
-    def __init__(self, music_list, svd_matrix, music_dict, iterations=100, window_size=15):
-        self.matrix = svd_matrix
-        self.music_dict = music_dict
-        # Cria os folds do K Fold, separando em treinamento e teste
-        self.kfold_trainings, self.kfold_tests = build_k_fold(music_list, window_size)
-
+    def __init__(self, music_list, iterations=100, clusters=3, window_size=15):
         # Criterio para o opencv K Means
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, iterations, 1.0)
+        self.num_clusters = clusters
+        # Cria os folds do K Fold, separando em treinamento e teste
+        self.kfold_trainings, self.kfold_tests = build_k_fold(music_list, window_size)
 
 
     # ---------------------------------------------------------------------------
     # Método execute_kfold_training() - Executa os treinamentos separados pelo K Fold
+    # - svd_matrix: Matriz SVD já calculada que será usada no aprendizado
+    # - music_dict: Dicionario contendo as musicas e seus respectivos sentimentos
+    #               e posições na matriz svd 
     # ---------------------------------------------------------------------------
-    def execute_kfold_training(self):
+    def execute_kfold_training(self, matrix, music_dict):
         current_accuracy = 0.
+
         for i in range(0,len(self.kfold_trainings)):
             
             # Constroi a matriz de treinamento obtendo o posicionamento das 
             # musicas conseguido do calculo do SVD
-            train_matrix = [self.matrix[self.music_dict[x]['pos']] for x in self.kfold_trainings[i]]
+            train_matrix = [matrix[music_dict[x]['pos']] for x in self.kfold_trainings[i]]
             train_matrix = np.float32(train_matrix)
 
             # Constroi a matriz de treinamento obtendo o posicionamento das 
             # musicas conseguido do calculo do SVD
-            test_matrix = [self.matrix[self.music_dict[x]['pos']] for x in self.kfold_tests[i]]
+            test_matrix = [matrix[music_dict[x]['pos']] for x in self.kfold_tests[i]]
             test_matrix = np.float32(test_matrix)
 
             # Executa o Kmeans com os critérios definidos no construtor da classe KMeans
-            ret,label,center=cv2.kmeans(train_matrix,3,None, self.criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+            ret,label,center=cv2.kmeans(train_matrix, self.num_clusters,None, self.criteria,10,cv2.KMEANS_RANDOM_CENTERS)
 
             # Obtem a proporção de cada grupo/centroide e o classifica de acordo
             # com a maioria
-            group_labels = get_proportion(label, self.music_dict, self.kfold_trainings[i])
+            group_labels = get_proportion(label, music_dict, self.kfold_trainings[i])
 
             # Executa o método execute_teste para testar o treinamento atual
-            self.execute_test(test_matrix, train_matrix, center, group_labels, i)
+            self.execute_test(music_dict, test_matrix, train_matrix, center, group_labels, i)
 
             # Guarda as informações dos K Means
             self.labels.append(label)
@@ -72,13 +74,15 @@ class KMeans:
     # ---------------------------------------------------------------------------
     # Método execute_test() - Executa a etapa de testes do aprendizado 
     #                         verificando a qual dos grupos as musicas pertencem
+    # - music_dict: Dicionario contendo as musicas e seus respectivos sentimentos
+    #               e posições na matriz svd
     # - test_matrix: matriz de teste que contem as posições de cada musica no SVD
     # - train_matrix: matriz usada para o treinamento do kmeans
     # - center: Centroides do treinamento atual
     # - group_labels: A classificação de cada centroide (pos, neg ou neutral)
     # - i: Execução atual do K Fold
     # ---------------------------------------------------------------------------
-    def execute_test(self, test_matrix, train_matrix, center, group_labels, i):
+    def execute_test(self, music_dict, test_matrix, train_matrix, center, group_labels, i):
         score = 0.
         accuracy = 0.
 
@@ -89,7 +93,7 @@ class KMeans:
 
             # Caso ela seja classificada de acordo com o sentimento da base dados,
             # acrescentamos +1 na pontuação do conjunto treinamento
-            if group_labels[music_label] == self.music_dict[self.kfold_tests[i][j]]['sentiment']:
+            if group_labels[music_label] == music_dict[self.kfold_tests[i][j]]['sentiment']:
                 score += 1
 
         
@@ -111,6 +115,15 @@ class KMeans:
             self.final_center = center
             self.best_accuracy = accuracy
             self.best_accuracy_train = i
+            self.final_group_labels = group_labels
 
-    def execute_best_test(self, test_matrix):
-        pass
+    def execute_best_test(self, test_matrix, music_dict):
+        # Para cada musica, verificamos a distancia dela para os centroides
+        for j in range(0,len(test_matrix)):
+            total_test_length = len(test_matrix)
+            music_label = get_minimum_distance_label(self.final_center, test_matrix[j])
+
+            # Caso ela seja classificada de acordo com o sentimento da base dados,
+            # acrescentamos +1 na pontuação do conjunto treinamento
+            if self.final_group_labels[music_label] == music_dict[self.kfold_tests[i][j]]['sentiment']:
+                score += 1

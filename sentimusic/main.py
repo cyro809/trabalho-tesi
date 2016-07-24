@@ -9,6 +9,6 @@ initial_matrix, vocabulary, music_list, music_dict = generate_matrix(filename)
 
 svd_matrix = calculate_svd(initial_matrix, 4)
 
-kmeans = KMeans(music_list, svd_matrix, music_dict)
+kmeans = KMeans(music_list)
 
-kmeans.execute_kfold_training()
+kmeans.execute_kfold_training(svd_matrix, music_dict)
