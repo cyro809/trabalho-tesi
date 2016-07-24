@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 from tfidf.tfidf_matrix import generate_matrix
 from music_svd import calculate_svd
