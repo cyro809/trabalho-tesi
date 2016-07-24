@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+
+# ---------------------------------------------------------------------------
+# Função build_k_fold(): Função para separar os conjuntos de treinamento e 
+#                        teste do K Fold
+# - array: Array que será dividido pelo K Fold
+# - test_size: O Tamanho da janela do conjunto de teste
+# ---------------------------------------------------------------------------
 def build_k_fold(array, test_size):
     k_fold_training = []
     k_fold_test = []
