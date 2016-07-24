@@ -117,13 +117,35 @@ class KMeans:
             self.best_accuracy_train = i
             self.final_group_labels = group_labels
 
-    def execute_best_test(self, test_matrix, music_dict):
+    # ---------------------------------------------------------------------------
+    # Método execute_best_test(): Executa a etapa de teste do aprendizado de
+    #                             maquina com o melhor dos conjuntos do K Fold
+    # - test_matrix: Matriz SVD que servirá para testes de aprendizado
+    # - music_dict: Dicionario contendo as musicas e seus respectivos sentimentos
+    #               e posições na matriz svd
+    # - music_list: Lista das músicas de teste
+    # ---------------------------------------------------------------------------
+    def execute_best_test(self, test_matrix, music_dict, music_list):
         # Para cada musica, verificamos a distancia dela para os centroides
+        accuracy = 0.
+        score = 0.
+        test_matrix = np.float32(test_matrix)
         for j in range(0,len(test_matrix)):
             total_test_length = len(test_matrix)
             music_label = get_minimum_distance_label(self.final_center, test_matrix[j])
 
             # Caso ela seja classificada de acordo com o sentimento da base dados,
             # acrescentamos +1 na pontuação do conjunto treinamento
-            if self.final_group_labels[music_label] == music_dict[self.kfold_tests[i][j]]['sentiment']:
+            if self.final_group_labels[music_label] == music_dict[music_list[j]]['sentiment']:
                 score += 1
+
+        # Calculamos a acuracia de acordo com a quantidade de musicas acertadas 
+        # sobre o total de musicas testadas
+        accuracy = score/total_test_length
+        print '**********************************************'
+        print '----------------------------------------------'
+        print
+        print 'Test Execution ', '- Accuracy: ', accuracy
+        print
+        print '----------------------------------------------'
+        print '**********************************************'
