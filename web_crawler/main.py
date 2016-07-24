@@ -9,7 +9,7 @@ from urllib import urlencode
 from scrapy.crawler import CrawlerProcess
 from utils import read_json, write_json, read_urls_file, read_urls_input
 from vagalume_spider import VagalumeSpider
-from test import Test
+from classifier import Classifier
 from music_count import sentiment_count
 
 
@@ -25,11 +25,11 @@ def crawl_lyrics(urls_array):
 
 def classify_lyrics(lyrics_array):
     classified_array = []
-    sys.stderr.write("Testing %s\n" % pycurl.version)
+    sys.stderr.write("Classifying Lyrics...\n")
     c = pycurl.Curl()
 
     for music in lyrics_array:
-        t = Test()
+        t = Classifier()
         lyric = {
             'text': music['lyrics'].encode('utf-8')
         }
@@ -48,7 +48,7 @@ def classify_lyrics(lyrics_array):
 
 
 if __name__ == "__main__":
-    json_filename = 'database_new.json'
+    json_filename = 'evanescence_database.json'
     input_filename = 'teste2.txt'
     database_array = read_json(json_filename)
     urls_array = read_urls_file(input_filename) # Aqui colocamos a entrada desejada

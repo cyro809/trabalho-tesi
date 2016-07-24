@@ -6,14 +6,12 @@ import re
 from scrapy.spiders import Spider
 from scrapy.selector import Selector
 from scrapy.crawler import CrawlerProcess
-from musics import Musics
 from utils import read_json, write_json
 
 
 class VagalumeSpider(Spider):
     name = "vagalume"
     allowed_domains = ["vagalume.com.br"]
-    start_urls = Musics.URLS
     lyrics_array = []
 
 

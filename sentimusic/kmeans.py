@@ -29,6 +29,7 @@ class KMeans:
         # Criterio para o opencv K Means
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, iterations, 1.0)
         self.num_clusters = clusters
+        
         # Cria os folds do K Fold, separando em treinamento e teste
         self.kfold_trainings, self.kfold_tests = build_k_fold(music_list, window_size)
 

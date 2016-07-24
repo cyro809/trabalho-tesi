@@ -10,7 +10,7 @@ from urllib import urlencode
 PY3 = sys.version_info[0] > 2
 
 
-class Test:
+class Classifier:
     def __init__(self):
         self.contents = ''
         if PY3:
