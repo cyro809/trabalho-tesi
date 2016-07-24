@@ -43,12 +43,13 @@ def classify_lyrics(lyrics_array):
         classified_array.append(music)
 
     c.close()
-
+    print "Done Classifying."
+    print
     return classified_array
 
 
 if __name__ == "__main__":
-    json_filename = 'evanescence_database.json'
+    json_filename = 'database_new.json'
     input_filename = 'teste2.txt'
     database_array = read_json(json_filename)
     urls_array = read_urls_file(input_filename) # Aqui colocamos a entrada desejada
