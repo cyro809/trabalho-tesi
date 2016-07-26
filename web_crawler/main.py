@@ -9,7 +9,7 @@ from urllib import urlencode
 from scrapy.crawler import CrawlerProcess
 from utils import read_json, write_json, read_urls_file, read_urls_input
 from vagalume_spider import VagalumeSpider
-from classifier import Classifier
+from classifier import ClassifierResponse
 from music_count import sentiment_count
 
 from random import shuffle
@@ -55,7 +55,7 @@ def classify_lyrics(lyrics_array):
 
     # Para cada música, fazemos a requisição com passando a letra como parametro do Curl
     for music in lyrics_array:
-        t = Classifier()
+        t = ClassifierResponse()
         lyric = {
             'text': music['lyrics'].encode('utf-8')
         }
@@ -89,7 +89,7 @@ def classify_lyrics(lyrics_array):
 if __name__ == "__main__":
 
     # Nome do arquivo json que queremos fazer as operações
-    json_filename = '../database_new.json'
+    json_filename = '../database_test2.json'
 
     # Nome do arquivo com as urls novas que queremos adicionar no json
     input_filename = 'teste2.txt'

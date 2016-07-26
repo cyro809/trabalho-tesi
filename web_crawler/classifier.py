@@ -9,8 +9,11 @@ from urllib import urlencode
 
 PY3 = sys.version_info[0] > 2
 
-
-class Classifier:
+# ---------------------------------------------------------------------------
+# Classe ClassifierResponse: Usada para retornar a resposta do Curl para classificar
+# as músicas
+# ---------------------------------------------------------------------------
+class ClassifierResponse:
     def __init__(self):
         self.contents = ''
         if PY3:
