@@ -7,6 +7,9 @@ from k_fold import build_k_fold
 from distance_utils import get_minimum_distance_label
 from proportion import get_proportion
 
+# ---------------------------------------------------------------------------
+# Classe KMeans: Utilizada para executar o KMeans com validação cruazada KFold
+# ---------------------------------------------------------------------------
 class KMeans:
     labels = []
     centers = []
