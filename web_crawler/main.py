@@ -89,7 +89,7 @@ def classify_lyrics(lyrics_array):
 if __name__ == "__main__":
 
     # Nome do arquivo json que queremos fazer as operações
-    json_filename = '../music_database.json'
+    json_filename = '../database_new.json'
 
     # Nome do arquivo com as urls novas que queremos adicionar no json
     input_filename = 'music_urls.txt'
