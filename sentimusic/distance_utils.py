@@ -12,7 +12,7 @@ import math
 def calculate_distance(p1,p2, num):
     result = 0
     for i in range(0,num):
-        result += (p1[0][i] - p2[i])**2
+        result += (p1[i] - p2[i])**2
 
     return math.sqrt(result)
 
