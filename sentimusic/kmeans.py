@@ -27,11 +27,14 @@ class KMeans:
     # - iterations: Quantas iterações o KMeans irá executar (default = 100)
     # - clusters: Quantidade de clusters (agrupados) que o KMeans irá agrupar as músicas
     # - window_size: Tamanho da janela para separação dos conjuntos no K Fold (default = 15)
+    # - attempts: Número de vezes em que o algoritmo será executado com diferentes
+    #             rotulamentos (default = 100)
     # ---------------------------------------------------------------------------
-    def __init__(self, music_list, iterations=100, clusters=3, window_size=15):
+    def __init__(self, music_list, iterations=100, clusters=3, window_size=15, attempts=100):
         # Criterio para o opencv K Means
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, iterations, 1.0)
         self.num_clusters = clusters
+        self.attempts = attempts
         
         # Cria os folds do K Fold, separando em treinamento e teste
         self.kfold_trainings, self.kfold_tests = build_k_fold(music_list, window_size)
@@ -59,7 +62,7 @@ class KMeans:
             test_matrix = np.float32(test_matrix)
 
             # Executa o Kmeans com os critérios definidos no construtor da classe KMeans
-            ret,label,center=cv2.kmeans(train_matrix, self.num_clusters,None, self.criteria,10,cv2.KMEANS_RANDOM_CENTERS)
+            ret,label,center=cv2.kmeans(train_matrix, self.num_clusters,None, self.criteria, self.attempts,cv2.KMEANS_RANDOM_CENTERS)
 
             # Obtem a proporção de cada grupo/centroide e o classifica de acordo
             # com a maioria
