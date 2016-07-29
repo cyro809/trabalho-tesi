@@ -107,13 +107,6 @@ class KMeans:
         # Calculamos a acuracia de acordo com a quantidade de musicas acertadas 
         # sobre o total de musicas testadas
         accuracy = score/total_test_length
-        print '**********************************************'
-        print
-        print
-        print 'Execution ', i, '- Accuracy: ', accuracy
-        print
-        print
-        print '**********************************************'
 
         # Verifica a pontuação do treinamento atual do K Means e guarda a matriz
         # de treinamento, os centroids, a acuracia e o numero da execução
@@ -149,12 +142,40 @@ class KMeans:
         # Calculamos a acuracia de acordo com a quantidade de musicas acertadas 
         # sobre o total de musicas testadas
         accuracy = score/total_test_length
-        print
-        print
-        print '**********************************************'
+        
+        #print '**********************************************'
         print '----------------------------------------------'
-        print
+        #print
         print 'Test Execution ', '- Accuracy: ', accuracy
-        print
+        #print
         print '----------------------------------------------'
         print '**********************************************'
+
+
+    def execute_all_k_fold_tests(self, matrix, test_matrix, music_dict):
+        current_accuracy = 0.
+
+        for i in range(0,len(self.kfold_trainings)):
+            
+            # Constroi a matriz de treinamento obtendo o posicionamento das 
+            # musicas conseguido do calculo do SVD
+            train_matrix = [matrix[music_dict[x]['pos']] for x in self.kfold_trainings[i]]
+            train_matrix = np.float32(train_matrix)
+
+            test_matrix = np.float32(test_matrix)
+
+            # Executa o Kmeans com os critérios definidos no construtor da classe KMeans
+            ret,label,center=cv2.kmeans(train_matrix, self.num_clusters,None, self.criteria, self.attempts,cv2.KMEANS_RANDOM_CENTERS)
+
+            # Obtem a proporção de cada grupo/centroide e o classifica de acordo
+            # com a maioria
+            group_labels = get_proportion(label, music_dict, self.kfold_trainings[i])
+
+            # Executa o método execute_teste para testar o treinamento atual
+            self.execute_test(music_dict, test_matrix, train_matrix, center, group_labels, i)
+
+            # Guarda as informações dos K Means
+            self.labels.append(label)
+            self.centers.append(center)
+            self.retValues.append(ret)
+            self.centers_labels.append(group_labels)

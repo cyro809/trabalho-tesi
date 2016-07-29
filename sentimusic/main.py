@@ -5,11 +5,21 @@ from tfidf.tfidf_matrix import generate_matrix
 from music_svd import calculate_svd
 from kmeans import KMeans
 
-train_length = 180
-K = 3
-window_size = 20
 
-filename = 'database_new_shuffled2.json'
+print "Database size: 435"
+
+
+train_length = raw_input('Training Set Length: \n')
+print
+K = raw_input('SVD K cut: \n')
+print
+window_size = raw_input('KFold window size: \n')
+print
+train_length = int(train_length)
+K = int(K)
+window_size = int(window_size)
+
+filename = 'final_database.json'
 initial_matrix, vocabulary, music_list, music_dict = generate_matrix(filename)
 
 # Calcula o SVD e retorna os vetor (de tamanho k=4) espaciais das musicas

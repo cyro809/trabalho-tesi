@@ -110,7 +110,10 @@ def docTerm_to_TF(doc_term_matrix_original):
         for j in range(number_columns):
             totalSum += doc_term_matrix[i][j]
         for j in range(number_columns):
-            doc_term_matrix[i][j] = doc_term_matrix[i][j] / totalSum 
+            if totalSum:
+                doc_term_matrix[i][j] = doc_term_matrix[i][j] / totalSum
+            else:
+                doc_term_matrix[0][j] = doc_term_matrix[i][j] / 1
         totalSum = 0
     return doc_term_matrix
     

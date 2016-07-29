@@ -10,7 +10,6 @@ import numpy as np
 # - k: tamanho do corte do SVD
 # ---------------------------------------------------------------------------
 def calculate_svd(matrix, k):
-        print 'calculate_svd'
         U, sigma, V = np.linalg.svd(matrix, full_matrices=False)
         music_vectors = np.dot(np.diag(sigma), V[:,:k])
         return music_vectors
