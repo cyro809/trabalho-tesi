@@ -162,7 +162,7 @@ class KMeans:
     # ---------------------------------------------------------------------------
     # Método execute_all_k_fold_tests(): Executa a etapa de teste do aprendizado de
     #                             maquina com o melhor dos conjuntos do K Fold
-    # - matrix: Matriz de treinamento
+    # - matrix: Matriz SVD usada como referencia para construir a matriz de treinamento
     # - test_matrix: Matriz SVD que servirá para testes de aprendizado
     # - music_dict: Dicionario contendo as musicas e seus respectivos sentimentos
     #               e posições na matriz svd

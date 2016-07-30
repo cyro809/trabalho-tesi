@@ -100,6 +100,9 @@ if __name__ == "__main__":
     # Leitura do arquivo de urls
     urls_array = read_urls_file(input_filename) # Aqui colocamos a entrada desejada
 
+    # Leitura das urls via input do usuário
+    # urls_array = read_urls_input()
+
     # Chama a função para crawl das letras retornando uma lista de dicionários
     lyrics_array = crawl_lyrics(urls_array)
     
