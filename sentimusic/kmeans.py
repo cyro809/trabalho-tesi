@@ -108,6 +108,13 @@ class KMeans:
         # sobre o total de musicas testadas
         accuracy = score/total_test_length
 
+        # Para saber a acuracia de cada teste, descomente as linhas abaixo
+        # print '**********************************************'
+        # print
+        # print 'Execution ', i, '- Accuracy: ', accuracy
+        # print
+        # print '**********************************************'
+
         # Verifica a pontuação do treinamento atual do K Means e guarda a matriz
         # de treinamento, os centroids, a acuracia e o numero da execução
         if accuracy > self.best_accuracy:
@@ -152,6 +159,14 @@ class KMeans:
         print '**********************************************'
 
 
+    # ---------------------------------------------------------------------------
+    # Método execute_all_k_fold_tests(): Executa a etapa de teste do aprendizado de
+    #                             maquina com o melhor dos conjuntos do K Fold
+    # - matrix: Matriz de treinamento
+    # - test_matrix: Matriz SVD que servirá para testes de aprendizado
+    # - music_dict: Dicionario contendo as musicas e seus respectivos sentimentos
+    #               e posições na matriz svd
+    # ---------------------------------------------------------------------------
     def execute_all_k_fold_tests(self, matrix, test_matrix, music_dict):
         current_accuracy = 0.
 
