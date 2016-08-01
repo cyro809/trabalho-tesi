@@ -25,4 +25,6 @@ Existem duas formas para executar:
 
 É possível selecionar o corte K da matriz SVD, o tamanho do conjunto de treinamento e o tamanho da janela do K-Fold
 
+## Shuffle
 
+Para reordernar as musicas do banco de dados execute o arquivo sentimusic/shuffle.py
